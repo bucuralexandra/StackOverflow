@@ -1,6 +1,5 @@
 package com.utcn.assignmentSD.service;
 
-import com.utcn.assignmentSD.model.Question;
 import com.utcn.assignmentSD.model.Tag;
 import com.utcn.assignmentSD.repository.ITagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class TagService {
       return tag.orElse(null);
     }
 
-    public String deleteUser(Integer id) {
+    public String deleteTag(Integer id) {
         try {
             iTagRepository.delete(this.getById(id));
             return "Delete success.";
@@ -35,13 +34,9 @@ public class TagService {
         }
     }
 
-    public Tag saveTag(String name, Question q)
+    public Tag saveTag(Tag tag)
     {
-        Tag t = new Tag(name);
-        t.addQuestion(q);
-        q.addTag(t);
-        iTagRepository.save(t);
-        return t;
+        return iTagRepository.save(tag);
     }
 
     public Tag updateTag(Integer id, Tag tag)
@@ -49,5 +44,16 @@ public class TagService {
         Tag initialTag = this.getById(id);
         initialTag.setName(tag.getName());
         return iTagRepository.save(initialTag);
+    }
+
+    public List<Tag> getByTitle(String title) {
+        List<Tag> allT = this.getAllTags();
+        return  allT.stream().filter(tag -> tag.getName().toLowerCase().contains(title.toLowerCase())).toList();
+    }
+
+    public Tag getByTitleTag(String title) {
+        List<Tag> allT = this.getAllTags();
+        Optional<Tag> t =  allT.stream().filter(tag -> tag.getName().equalsIgnoreCase(title)).findFirst();
+        return t.orElse(null);
     }
 }

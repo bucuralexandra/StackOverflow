@@ -1,12 +1,16 @@
 package com.utcn.assignmentSD.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "questions")
+@JsonIgnoreProperties({"votes"})
 public class Question {
 
     @Id
@@ -24,9 +28,21 @@ public class Question {
     private User user;
 
 
-    @OneToMany
-    @JoinColumn(table = "tag_link", name = "question_id")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "tag_link",
+            joinColumns = {
+                    @JoinColumn(name = "question_id", referencedColumnName = "question_id")},
+            //prima ii numele din tabelu de legatura, a doua e din tabelu initial => aici questions
+            inverseJoinColumns = {
+                    @JoinColumn(name = "tag_id", referencedColumnName = "tag_id")})
     private Set<Tag> tags = new HashSet<>();
+
+
+    @OneToMany (mappedBy = "questionn")
+    private Set<Answer> answers = new HashSet<>();
+
+    @OneToMany (mappedBy = "questionV")
+    private Set<VoteQuestion> votes = new HashSet<>();
 
     public Question() {
     }
@@ -36,6 +52,12 @@ public class Question {
         this.body = body;
         this.creationDate = creationDate;
         this.user = user;
+    }
+
+    public Question(String title, String body) {
+        this.title = title;
+        this.body = body;
+        this.creationDate = Calendar.getInstance().getTime();
     }
 
     public String getTitle() {
@@ -70,6 +92,19 @@ public class Question {
         this.user = user;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public int computeVote()
+    {
+        int sum = 0;
+        for( VoteQuestion voteQuestion: votes)
+        {
+            sum += voteQuestion.getVote();
+        }
+        return sum;
+    }
     public Set<Tag> getTags() {
         return tags;
     }
@@ -92,5 +127,25 @@ public class Question {
                 ", creationDate=" + creationDate +
                 ", user=" + user.getName() +
                 '}' + "\n";
+    }
+
+    public void deleteAnswer(Answer answer) {
+        this.answers.remove(answer);
+    }
+
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
+    }
+
+    public Set<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void addVote(VoteQuestion voteQuestion) {
+        this.votes.add(voteQuestion);
+    }
+
+    public Set<VoteQuestion> getVotes() {
+        return votes;
     }
 }

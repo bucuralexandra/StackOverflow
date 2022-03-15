@@ -1,12 +1,9 @@
 package com.utcn.assignmentSD.repository;
 
-
-import com.utcn.assignmentSD.model.Question;
+import com.utcn.assignmentSD.model.VoteQuestion;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IQuestionRepository extends CrudRepository<Question, Integer> {
-
+public interface IVoteQRepository extends CrudRepository<VoteQuestion, Integer> {
 }
-

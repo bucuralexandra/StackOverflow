@@ -1,7 +1,9 @@
 package com.utcn.assignmentSD.service;
 
+import com.utcn.assignmentSD.model.Answer;
 import com.utcn.assignmentSD.model.Question;
 import com.utcn.assignmentSD.model.User;
+import com.utcn.assignmentSD.repository.IQuestionRepository;
 import com.utcn.assignmentSD.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,8 @@ public class UserService {
 
     @Autowired
     IUserRepository iUserRepository;
-
+    @Autowired
+    IQuestionRepository iQuestionRepository;
     public List<User> getAllUsers() {
         return (List<User>) iUserRepository.findAll();
     }
@@ -27,6 +30,8 @@ public class UserService {
 
     public String deleteUser(Integer id) {
         try {
+            User user = this.getUser(id);
+            iQuestionRepository.deleteAll(user.getQuestions());
             iUserRepository.delete(this.getUser(id));
             return "Delete success.";
         }catch (Exception e){
@@ -53,5 +58,13 @@ public class UserService {
         User u = user.orElse(null);
         assert u != null;
         return u.getQuestions();
+    }
+
+    public Set<Answer> seeAnswers(Integer id)
+    {
+        Optional<User> user = iUserRepository.findById(id);
+        User u = user.orElse(null);
+        assert u != null;
+        return u.getAnswers();
     }
 }

@@ -1,5 +1,6 @@
 package com.utcn.assignmentSD.controller;
 
+import com.utcn.assignmentSD.model.Answer;
 import com.utcn.assignmentSD.model.Question;
 import com.utcn.assignmentSD.model.User;
 import com.utcn.assignmentSD.service.UserService;
@@ -54,5 +55,9 @@ public class UserController {
         return  userService.seeQuestions(id);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/seeUserA")
+    @ResponseBody
+    public Set<Answer> seeAnswers(@RequestParam(name = "id") Integer id) {
+        return  userService.seeAnswers(id);
+    }
 }
-

@@ -7,17 +7,18 @@ import java.util.List;
 @Entity
 @Table(name = "tags")
 public class Tag {
+
     @Id
-    @Column(name = "id")
+    @Column(name = "tag_id")
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany
-    @JoinColumn(table = "tag_link", name = "tag_id")
-    private List<Question> questions = new ArrayList<>();
-
     @Column(name="name")
     private String name;
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<Question> questions = new ArrayList<>();
+
     public Integer getId() {
         return id;
     }

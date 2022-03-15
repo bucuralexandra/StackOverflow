@@ -31,6 +31,20 @@ public class QuestionController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findByTitle")
+    @ResponseBody
+    public List<Question> findByTitle(@RequestParam(name = "title")String title)
+    {
+        return questionService.findByTitle(title);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/findByTag")
+    @ResponseBody
+    public List<Question> findByTag(@RequestParam(name = "tag")String tag)
+    {
+        return questionService.findByTag(tag);
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/getQuestion")
     @ResponseBody
     public Question getQuestion(@RequestParam(name = "id") Integer id) {
@@ -45,9 +59,24 @@ public class QuestionController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/saveQuestion")
     @ResponseBody
-    public Question saveQuestion(@RequestBody Question question, @RequestParam(name="id")Integer id) {
-        return questionService.saveQuestion(question.getTitle(), question.getBody(), id);
+    public Question saveQuestion(@RequestBody Question question, @RequestParam(name="id")Integer id, @RequestParam(name = "tags") List<String> tagNames) {
+        return questionService.saveQuestion(question.getTitle(), question.getBody(), id, tagNames);
+    }
+    @RequestMapping(method = RequestMethod.GET, value = "/updateQ")
+    @ResponseBody
+    public Question updateQuestion(@RequestParam(name = "id") Integer id,@RequestParam(name = "tags") List<String> tagNames, @RequestParam(name="title") String title, @RequestParam(name="body") String body) {
+        return questionService.updateQuestion(id,tagNames,title, body);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getVote")
+    @ResponseBody
+    public String seeVotes(@RequestParam(name = "id") Integer id) {
+        return questionService.computeVote(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/seeAnswers")
+    @ResponseBody
+    public String seeAnswers(@RequestParam(name = "id") Integer id) {
+        return questionService.getAnswers(id);
     }
 }
-
-
